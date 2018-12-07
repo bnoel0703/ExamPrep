@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.IO;
+using System.Xml.Serialization;
 
 namespace ExamPrepConsoleApp
 {
@@ -163,6 +164,8 @@ namespace ExamPrepConsoleApp
             Title = title;
             Length = length;
         }
+
+        public MusicTrack() {}
     }
 
     class Program
@@ -182,42 +185,25 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            CodeCompileUnit compileUnit = new CodeCompileUnit();
+            MusicTrack track = new MusicTrack(artist: "Rob Miles", title: "My Way", length: 150);
 
-            // Create a namespace to hold the types we are going to create
-            CodeNamespace personnelNameSpace = new CodeNamespace("Personnel");
+            XmlSerializer musicTrackSerializer = new XmlSerializer(typeof(MusicTrack));
 
-            // Import the system namespace
-            personnelNameSpace.Imports.Add(new CodeNamespaceImport("System"));
-            // Create a Person class
-            CodeTypeDeclaration personClass = new CodeTypeDeclaration("Person");
-            personClass.IsClass = true;
-            personClass.TypeAttributes = System.Reflection.TypeAttributes.Public;
-            // Add the Person class to personnelNamespace
-            personnelNameSpace.Types.Add(personClass);
+            TextWriter serWriter = new StringWriter();
+            musicTrackSerializer.Serialize(textWriter:serWriter, o:track);
+            serWriter.Close();
 
-            // Create a field to hold the name of a person
-            CodeMemberField nameField = new CodeMemberField("String", "name");
-            nameField.Attributes = MemberAttributes.Private;
+            string trackXML = serWriter.ToString();
 
-            // Add the name field to the Person class
-            personClass.Members.Add(nameField);
+            Console.WriteLine("Track XML");
+            Console.WriteLine(trackXML);
 
-            // Add the namespace to the document
-            compileUnit.Namespaces.Add(personnelNameSpace);
+            TextReader serReader = new StringReader(trackXML);
 
-            // Create a provider to parse the document
-            CodeDomProvider provider = CodeDomProvider.CreateProvider("C-Sharp");
-            // Give the provider somewhere to send the parsed output
-            StringWriter s = new StringWriter();
-            // Set some options for the parse - we can use the defaults
-            CodeGeneratorOptions options = new CodeGeneratorOptions();
+            MusicTrack trackRead = musicTrackSerializer.Deserialize(serReader) as MusicTrack;
 
-            // Generate the C# source from the CodeDOM
-            provider.GenerateCodeFromCompileUnit(compileUnit, s, options);
-            s.Close();
-
-            Console.WriteLine(s.ToString());
+            Console.WriteLine("Read back: ");
+            Console.WriteLine(trackRead);
 
             EndProgram();
         }
