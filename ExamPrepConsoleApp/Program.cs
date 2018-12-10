@@ -188,6 +188,7 @@ namespace ExamPrepConsoleApp
         static void Main(string[] args)
         {
             string plainText = "This is my super secret data";
+            string decryptedText;
 
             // byte array to hold the encrypted message
             byte[] cipherText;
@@ -200,6 +201,54 @@ namespace ExamPrepConsoleApp
 
             // Create an Aes instance
             // This creates a random key and initialization vector
+            EncryptWithAes(plainText, out cipherText, out key, out initializationVector);
+
+            decryptedText = DecryptWithAes(cipherText, key, initializationVector);
+
+            // Dump out our data
+            Console.WriteLine($"String to encrypt: {plainText}");
+            DumpBytes("Key: ", key);
+            DumpBytes("Initialization Vector: ", initializationVector);
+            DumpBytes("Encrypted ", cipherText);
+
+            Console.WriteLine(decryptedText);
+
+            EndProgram();
+        }
+
+        private static string DecryptWithAes(byte[] cipherText, byte[] key, byte[] initializationVector)
+        {
+            string decryptedText;
+            using (Aes aes = Aes.Create())
+            {
+                // Configure the aes instances with the key and
+                // initialization vector to use for the decryption
+                aes.Key = key;
+                aes.IV = initializationVector;
+
+                // Create the decryptor from the aes
+                // should be wrapped in using for production code
+                ICryptoTransform decryptor = aes.CreateDecryptor();
+
+                using (MemoryStream decryptStream = new MemoryStream(cipherText))
+                {
+                    using (CryptoStream decryptCryptoStream = new CryptoStream(decryptStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(decryptCryptoStream))
+                        {
+                            // Read the decrypted bytes from the decrypting stream
+                            // and place them in a string.
+                            decryptedText = srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+
+            return decryptedText;
+        }
+
+        private static void EncryptWithAes(string plainText, out byte[] cipherText, out byte[] key, out byte[] initializationVector)
+        {
             using (Aes aes = Aes.Create())
             {
                 // copy the key and the initialization vector
@@ -229,14 +278,6 @@ namespace ExamPrepConsoleApp
                     }
                 }
             }
-
-            // Dump out our data
-            Console.WriteLine($"String to encrypt: {plainText}");
-            DumpBytes("Key: ", key);
-            DumpBytes("Initialization Vector: ", initializationVector);
-            DumpBytes("Encrypted ", cipherText);
-
-            EndProgram();
         }
 
         static void DumpBytes(string title, byte[] bytes)
