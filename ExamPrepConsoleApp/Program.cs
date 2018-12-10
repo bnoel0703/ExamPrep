@@ -15,6 +15,8 @@ using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Xml.Serialization;
+using System.Text.RegularExpressions;
+using System.Security.Cryptography;
 
 namespace ExamPrepConsoleApp
 {
@@ -185,27 +187,64 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            MusicTrack track = new MusicTrack(artist: "Rob Miles", title: "My Way", length: 150);
+            string plainText = "This is my super secret data";
 
-            XmlSerializer musicTrackSerializer = new XmlSerializer(typeof(MusicTrack));
+            // byte array to hold the encrypted message
+            byte[] cipherText;
 
-            TextWriter serWriter = new StringWriter();
-            musicTrackSerializer.Serialize(textWriter:serWriter, o:track);
-            serWriter.Close();
+            // byte array to hold the key that was used for encryption
+            byte[] key;
 
-            string trackXML = serWriter.ToString();
+            // byte array to hold the initialization vector that was used for encryption
+            byte[] initializationVector;
 
-            Console.WriteLine("Track XML");
-            Console.WriteLine(trackXML);
+            // Create an Aes instance
+            // This creates a random key and initialization vector
+            using (Aes aes = Aes.Create())
+            {
+                // copy the key and the initialization vector
+                key = aes.Key;
+                initializationVector = aes.IV;
 
-            TextReader serReader = new StringReader(trackXML);
+                // create an encryptor to encrypt some data
+                // should be wrapped in using for production code
+                ICryptoTransform encryptor = aes.CreateEncryptor();
 
-            MusicTrack trackRead = musicTrackSerializer.Deserialize(serReader) as MusicTrack;
 
-            Console.WriteLine("Read back: ");
-            Console.WriteLine(trackRead);
+                // Create a new memory stream to receive the encrypted data
+                using (MemoryStream encryptMemoryStream = new MemoryStream())
+                {
+                    // create a CryptoStream, tell it the stream to write to
+                    // and the encryptor to use. Also set the mode
+                    using (CryptoStream encryptCryptoStream = new CryptoStream(encryptMemoryStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        // make a stream writer from the cryptostream
+                        using (StreamWriter swEncrypt = new StreamWriter(encryptCryptoStream))
+                        {
+                            // Write the secret message to the stream.
+                            swEncrypt.Write(plainText);
+                        }
+                        // get the encrypted message from the stream
+                        cipherText = encryptMemoryStream.ToArray();
+                    }
+                }
+            }
+
+            // Dump out our data
+            Console.WriteLine($"String to encrypt: {plainText}");
+            DumpBytes("Key: ", key);
+            DumpBytes("Initialization Vector: ", initializationVector);
+            DumpBytes("Encrypted ", cipherText);
 
             EndProgram();
+        }
+
+        static void DumpBytes(string title, byte[] bytes)
+        {
+            Console.Write(title);
+            foreach(var b in bytes)
+                Console.WriteLine($"{b:X}");
+            Console.WriteLine();
         }
 
         [Conditional("VERBOSE"), Conditional("TERSE")]
