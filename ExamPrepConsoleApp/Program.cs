@@ -189,11 +189,16 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            ShowChecksum("Hello world");
-            ShowChecksum("world Hello");
-            ShowChecksum("Hemmm world");
+            ShowHash("Hello world");
+            ShowHash("world Hello");
+            ShowHash("Hemmm world");
 
             EndProgram();
+        }
+
+        static void ShowHash(object source) // Listing 3-22
+        {
+            Console.WriteLine($"Hash for {source} is: {source.GetHashCode():X}");
         }
 
         private static int CalculateChecksum(string source) // Listing 3-21
