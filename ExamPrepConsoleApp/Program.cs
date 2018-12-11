@@ -189,9 +189,26 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            
+            ShowChecksum("Hello world");
+            ShowChecksum("world Hello");
+            ShowChecksum("Hemmm world");
 
             EndProgram();
+        }
+
+        private static int CalculateChecksum(string source) // Listing 3-21
+        {
+            int total = 0;
+            foreach (char ch in source)
+            {
+                total = total + (int)ch;
+            }
+            return total;
+        }
+
+        private static void ShowChecksum(string source) // Listing 3-21
+        {
+            Console.WriteLine($"Checksum for {source} is {CalculateChecksum(source)}");
         }
 
         private static void SignData() // Listing 3-20
