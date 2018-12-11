@@ -189,7 +189,23 @@ namespace ExamPrepConsoleApp
         static void Main(string[] args)
         {
 
+
             EndProgram();
+        }
+
+        private static void CSPKeyStore() // Listing 3-19
+        {
+            string containerName = "MyKeyStore";
+
+            CspParameters csp = new CspParameters();
+            csp.KeyContainerName = containerName;
+
+            // Create a new RSA to encrypt the data
+            RSACryptoServiceProvider rsaStore = new RSACryptoServiceProvider(csp);
+            Console.WriteLine($"Stored keys: {rsaStore.ToXmlString(includePrivateParameters: true)}");
+
+            RSACryptoServiceProvider rsaLoad = new RSACryptoServiceProvider(csp);
+            Console.WriteLine($"Loaded keys: {rsaLoad.ToXmlString(includePrivateParameters: true)}");
         }
 
         private static void EncryptWithRSA() // Listing 3-16
