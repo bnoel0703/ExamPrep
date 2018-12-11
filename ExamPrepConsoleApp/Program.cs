@@ -18,6 +18,7 @@ using System.Xml.Serialization;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Text;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ExamPrepConsoleApp
 {
@@ -188,9 +189,62 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-
+            
 
             EndProgram();
+        }
+
+        private static void SignData() // Listing 3-20
+        {
+            // This will convert our input string into bytes and back
+
+            ASCIIEncoding converter = new ASCIIEncoding();
+
+            // Get a crypto provider out of the certificate store
+            // should be wrapped in using for production code
+            X509Store store = new X509Store("demoCertStore", StoreLocation.CurrentUser);
+
+            store.Open(OpenFlags.ReadOnly);
+
+            // should be wrapped in using for production code
+            X509Certificate2 certificate = store.Certificates[0];
+
+            // should be wrapped in using for production code
+            RSACryptoServiceProvider encryptProvider = certificate.PrivateKey as RSACryptoServiceProvider;
+
+            string messageToSign = "This is the message I want to sign";
+            Console.WriteLine($"Message: {messageToSign}");
+
+            byte[] messageToSignBytes = converter.GetBytes(messageToSign);
+            DumpBytes("Message to sign in bytes: ", messageToSignBytes);
+
+            // need to calculate a hash for this message - this will go into the
+            // signature and be used to verify the message
+            // Create an implementation of the hashing algorithm we are going to use
+            // should be wrapped in using for production code
+            HashAlgorithm hasher = new SHA1Managed();
+            // Use the hasher to hash the message
+            byte[] hash = hasher.ComputeHash(messageToSignBytes);
+            DumpBytes("Hash for message: ", hash);
+
+            // Now sign the hash to create a signature
+            byte[] signature = encryptProvider.SignHash(hash, CryptoConfig.MapNameToOID("SHA1"));
+            DumpBytes("Signature: ", messageToSignBytes);
+
+            // We can send the signature along with the message to authenticate it
+            // Create a decryptor that uses the public key 
+            // should be wrapped in using for production code
+            RSACryptoServiceProvider decryptProvider = certificate.PublicKey.Key as RSACryptoServiceProvider;
+
+            // Now use the signature to perform a successful validation of the message
+            bool validSignature = decryptProvider.VerifyHash(hash, CryptoConfig.MapNameToOID("SHA1"), signature);
+            Console.WriteLine($"Correct signature validated OK: {validSignature}");
+
+            // Change one byte of the signature
+            signature[0] = 99;
+            // Now try using the incorrect signautre to validate the message
+            bool invalidSignature = decryptProvider.VerifyHash(hash, CryptoConfig.MapNameToOID("SHA1"), signature);
+            Console.WriteLine($"Incorrect signature validated OK: {invalidSignature}");
         }
 
         private static void CSPKeyStore() // Listing 3-19
