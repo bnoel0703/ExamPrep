@@ -150,6 +150,38 @@ namespace ExamPrepConsoleApp
         }
     }
 
+    public class ResourceHolder : IDisposable
+    {
+        // Flag to indicate when the object has been disposed
+        bool disposed = false;
+
+        public void Dispose()
+        {
+            // Call dispose and tell it that it is being called from a Dispose call
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public virtual void Dispose(bool disposing)
+        {
+            // Give up if already disposed
+            if (disposed)
+                return;
+            
+            if (disposing)
+            {
+                // free any managed objects here
+            }
+
+            // Free any unmanaged objects here
+        }
+
+        ~ResourceHolder()
+        {
+            // Dispose only of unmanaged objects here
+            Dispose(false);
+        }
+    }
     public class MusicTrack
     {
         public string Artist { get; set; }
@@ -189,11 +221,30 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            ShowHash("Hello world");
-            ShowHash("world Hello");
-            ShowHash("Hemmm world");
 
             EndProgram();
+        }
+
+        static byte[] CalculateHash(string source) // Listing 3-23
+        {
+            // This will convert our input string into bytes and back
+            ASCIIEncoding converter = new ASCIIEncoding();
+            byte[] sourceBytes = converter.GetBytes(source);
+
+            HashAlgorithm hasher = SHA256.Create();
+            byte[] hash = hasher.ComputeHash(sourceBytes);
+            return hash;
+        }
+
+        static void ShowHash(string source) // Listing 3-23
+        {
+            Console.WriteLine($"Hash for {source} is: ");
+
+            byte[] hash = CalculateHash(source);
+
+            foreach (byte b in hash)
+                Console.WriteLine($"{b:X}");
+            Console.WriteLine();
         }
 
         static void ShowHash(object source) // Listing 3-22
