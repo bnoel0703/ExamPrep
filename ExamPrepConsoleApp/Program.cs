@@ -221,8 +221,65 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-
+            StreamEncrypt();
             EndProgram();
+        }
+
+        private static void StreamEncrypt() // Listing 3-24
+        {
+            string plainText = "This is my super super secret data";
+
+            // byte array to hold the encrypted message
+            byte[] encryptedText;
+
+            // byte arrays to hold the key that was used for encryption
+            byte[] key1;
+            byte[] key2;
+
+            // byte array to hold the initialization vector that was used for encryption
+            byte[] initilizationVector1;
+            byte[] initilizationVector2;
+
+            using (Aes aes1 = Aes.Create())
+            {
+                // copy the key and the initializtion vector
+                key1 = aes1.Key;
+                initilizationVector1 = aes1.IV;
+
+                // create an encryptor to encrypt some data
+                ICryptoTransform encryptor1 = aes1.CreateEncryptor();
+
+                // Create a new memory stream to receive the encrypted data.
+
+                using (MemoryStream encryptMemoryStream = new MemoryStream())
+                {
+                    // create a CryptoStream, tell it the stream to write to and the encryptor to use
+                    // also set the mode
+                    using (CryptoStream cryptoStream1 = new CryptoStream(encryptMemoryStream, encryptor1, CryptoStreamMode.Write))
+                    {
+                        // Add another layer of encryption
+                        using (Aes aes2 = Aes.Create())
+                        {
+                            // copy the key and the initlization vector
+                            key2 = aes2.Key;
+                            initilizationVector2 = aes2.IV;
+
+                            ICryptoTransform encryptor2 = aes2.CreateEncryptor();
+
+                            using (CryptoStream cryptostream2 = new CryptoStream(cryptoStream1, encryptor2, CryptoStreamMode.Write))
+                            {
+                                using (StreamWriter swEncrypt = new StreamWriter(cryptostream2))
+                                {
+                                    // Write the secret message to the stream.
+                                    swEncrypt.Write(plainText);
+                                }
+                                // get the encrypted message from the stream
+                                encryptedText = encryptMemoryStream.ToArray();
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         static byte[] CalculateHash(string source) // Listing 3-23
