@@ -221,8 +221,18 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            StreamEncrypt();
             EndProgram();
+        }
+
+        private static void DebugCodeTracing() // Listing 3-33
+        {
+            Debug.WriteLine("Starting the program");
+            Debug.Indent();
+            Debug.WriteLine("Inside a function");
+            Debug.Unindent();
+            Debug.WriteLine("Outside a function");
+            string customerName = "Bryan";
+            Debug.WriteLineIf(string.IsNullOrEmpty(customerName), "The name is empty");
         }
 
         private static void StreamEncrypt() // Listing 3-24
