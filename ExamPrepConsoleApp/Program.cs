@@ -221,8 +221,10 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
+            Assemblies();
             EndProgram();
         }
+
 
         private static void DebugCodeTracing() // Listing 3-33
         {
@@ -233,6 +235,12 @@ namespace ExamPrepConsoleApp
             Debug.WriteLine("Outside a function");
             string customerName = "Bryan";
             Debug.WriteLineIf(string.IsNullOrEmpty(customerName), "The name is empty");
+        }
+
+        private static void Assemblies() // Listing 3-25
+        {
+            MusicTrack m = new MusicTrack(artist: "Rob Miles", title: "My Way", length: 150);
+            Console.WriteLine(m);
         }
 
         private static void StreamEncrypt() // Listing 3-24
