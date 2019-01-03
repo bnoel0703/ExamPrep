@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamPrepConsoleApp", "ExamP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamPrepWPFApp", "ExamPrepWPFApp\ExamPrepWPFApp.csproj", "{CDE23FA9-5453-444B-8552-C58AA62D97AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamPrepWebApp", "ExamPrepWebApp\ExamPrepWebApp.csproj", "{B908802D-4998-46E3-9D07-75023133E195}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamPrepWebApp", "ExamPrepWebApp\ExamPrepWebApp.csproj", "{B908802D-4998-46E3-9D07-75023133E195}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

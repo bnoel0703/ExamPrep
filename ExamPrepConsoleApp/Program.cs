@@ -1,5 +1,6 @@
 ﻿//#define TERSE
 #define VERBOSE
+//#undef DEBUG
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -167,7 +168,7 @@ namespace ExamPrepConsoleApp
             // Give up if already disposed
             if (disposed)
                 return;
-            
+
             if (disposing)
             {
                 // free any managed objects here
@@ -184,6 +185,7 @@ namespace ExamPrepConsoleApp
     }
     public class MusicTrack
     {
+        public static bool DebugMode = false;
         public string Artist { get; set; }
         public string Title { get; set; }
         public int Length { get; set; }
@@ -199,9 +201,14 @@ namespace ExamPrepConsoleApp
             Artist = artist;
             Title = title;
             Length = length;
+
+#if DIAGNOSTICS
+            Console.WriteLine($"Music track created: {this.ToString()}");
+
+#endif
         }
 
-        public MusicTrack() {}
+        public MusicTrack() { }
     }
 
     class Program
@@ -233,6 +240,12 @@ namespace ExamPrepConsoleApp
             Debug.WriteLine("Outside a function");
             string customerName = "Bryan";
             Debug.WriteLineIf(string.IsNullOrEmpty(customerName), "The name is empty");
+        }
+
+        [Conditional("DEBUG")]
+        static void display(string message)
+        {
+            Console.WriteLine(message);
         }
 
         private static void StrongNames() // Listing 3-26
@@ -536,7 +549,7 @@ namespace ExamPrepConsoleApp
         static void DumpBytes(string title, byte[] bytes)
         {
             Console.Write(title);
-            foreach(var b in bytes)
+            foreach (var b in bytes)
                 Console.WriteLine($"{b:X}");
             Console.WriteLine();
         }
@@ -669,19 +682,19 @@ namespace ExamPrepConsoleApp
 
         static void DoWork(object state)
         {
-            Console.WriteLine($"Doing work: {state}");
+            Console.WriteLine($"Doing work : {state}");
             Thread.Sleep(500);
-            Console.WriteLine($"Work finished: {state}");
+            Console.WriteLine($"Work finished : {state}");
         }
 
         static void DisplayThread(Thread t)
         {
-            Console.WriteLine($"Name: {t.Name}");
-            Console.WriteLine($"Culture: {t.CurrentCulture}");
-            Console.WriteLine($"Priority: {t.Priority}");
-            Console.WriteLine($"Context: {t.ExecutionContext}");
-            Console.WriteLine($"IsBackground?: {t.IsBackground}");
-            Console.WriteLine($"IsPool?: {t.IsThreadPoolThread}");
+            Console.WriteLine($"Name : {t.Name}");
+            Console.WriteLine($"Culture : {t.CurrentCulture}");
+            Console.WriteLine($"Priority : {t.Priority}");
+            Console.WriteLine($"Context : {t.ExecutionContext}");
+            Console.WriteLine($"IsBackground? : {t.IsBackground}");
+            Console.WriteLine($"IsPool? : {t.IsThreadPoolThread}");
         }
 
         public static ThreadLocal<Random> RandomGenerator = new ThreadLocal<Random>(() => { return new Random(2); });
@@ -692,6 +705,7 @@ namespace ExamPrepConsoleApp
             Thread.Sleep(2000);
         }
 
+        [Obsolete("This method is obsolete. Call DoWork() instead.", false)]
         static void WorkOnData(object data)
         {
             Console.WriteLine($"Working on: {data}");
