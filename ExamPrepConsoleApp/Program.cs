@@ -221,10 +221,8 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            Assemblies();
             EndProgram();
         }
-
 
         private static void DebugCodeTracing() // Listing 3-33
         {
@@ -235,6 +233,12 @@ namespace ExamPrepConsoleApp
             Debug.WriteLine("Outside a function");
             string customerName = "Bryan";
             Debug.WriteLineIf(string.IsNullOrEmpty(customerName), "The name is empty");
+        }
+
+        private static void StrongNames() // Listing 3-26
+        {
+            string assemblyName = typeof(MusicTrack).Assembly.FullName;
+            Console.WriteLine(assemblyName);
         }
 
         private static void Assemblies() // Listing 3-25
