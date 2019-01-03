@@ -228,7 +228,46 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
+            
+
             EndProgram();
+        }
+
+        private static void SimpleTraceSource() // Listing 3-37
+        {
+            TraceSource trace = new TraceSource("Tracer", SourceLevels.All);
+            trace.TraceEvent(TraceEventType.Start, 10000);
+            trace.TraceEvent(TraceEventType.Warning, 10001);
+            trace.TraceEvent(TraceEventType.Verbose, 10002, "At the end of the program");
+            trace.TraceData(TraceEventType.Information, 1003, new object[] { "Note 1", "Message 2" });
+            trace.Flush();
+            trace.Close();
+        }
+
+        private static void TraceListener() // Listing 3-36
+        {
+            TraceListener consoleListener = new ConsoleTraceListener();
+            Trace.Listeners.Add(consoleListener);
+            Trace.TraceInformation("This is an information message");
+            Trace.TraceWarning("This is a warning message");
+            Trace.TraceError("This is an error message");
+        }
+
+        private static void DebugAssertions() // Listing 3-35
+        {
+            string customerName = "Bryan";
+            Debug.Assert(!string.IsNullOrWhiteSpace(customerName));
+
+            customerName = "";
+            Debug.Assert(!string.IsNullOrWhiteSpace(customerName));
+        }
+
+        private static void TraceCodeTracing() // Listing 3-34
+        {
+            Trace.WriteLine("Starting the program");
+            Trace.TraceInformation("This is an information message");
+            Trace.TraceWarning("This is a warning message");
+            Trace.TraceError("This is an error message");
         }
 
         private static void DebugCodeTracing() // Listing 3-33
