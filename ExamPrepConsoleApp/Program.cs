@@ -228,9 +228,18 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            
-
+            TraceSwitch();
             EndProgram();
+        }
+
+        private static void TraceSwitch() // Listing 3-38
+        {
+            TraceSwitch control = new TraceSwitch("Control", "Control the trace output");
+            control.Level = TraceLevel.Warning;
+
+            if (control.TraceError)
+                Console.WriteLine("An error has occured");
+            Trace.WriteLineIf(control.TraceWarning, "A warning message");
         }
 
         private static void SimpleTraceSource() // Listing 3-37
