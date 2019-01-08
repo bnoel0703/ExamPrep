@@ -228,8 +228,27 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            TraceSwitch();
+            
+
             EndProgram();
+        }
+
+        private static void SourceSwitch() // Listing 3-40
+        {
+            TraceSource trace = new TraceSource("Tracer", SourceLevels.All);
+            SourceSwitch control = new SourceSwitch("control", "Controls the tracing")
+            {
+                Level = SourceLevels.Information
+            };
+            trace.Switch = control;
+
+            trace.TraceEvent(TraceEventType.Start, 10000);
+            trace.TraceEvent(TraceEventType.Warning, 10001);
+            trace.TraceEvent(TraceEventType.Verbose, 10002, "At the end of the program");
+            trace.TraceEvent(TraceEventType.Information, 10003, "Some information",
+            new object[] { "line1", "line2" });
+            trace.Flush();
+            trace.Close();
         }
 
         private static void TraceSwitch() // Listing 3-38
