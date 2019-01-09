@@ -228,7 +228,21 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            
+            PerformanceCounter processor = new PerformanceCounter(
+                categoryName:"Processor Information",
+                counterName: "% Processor Time",
+                instanceName: "_Total"
+            );
+
+            Console.WriteLine("Press any key to stop");
+
+            while(true)
+            {
+                System.Console.WriteLine($"Processor time {processor.NextValue()}");
+                Thread.Sleep(500);
+                if (Console.KeyAvailable)
+                    break;
+            }
 
             EndProgram();
         }
