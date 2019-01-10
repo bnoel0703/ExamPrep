@@ -224,11 +224,14 @@ namespace ExamPrepConsoleApp
         static GetValue getLocalInt;
         static PerformanceCounter TotalImageCounter;
         static PerformanceCounter ImagesPerSecondCounter;
+        static EventLog imageEventLog;
 
         enum CreationResult
         {
             CreatedCounters,
-            LoadedCounters
+            LoadedCounters,
+            CreatedLog,
+            LoadedLog
         };
 
         // static CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -239,6 +242,45 @@ namespace ExamPrepConsoleApp
             
 
             EndProgram();
+        }
+
+        private static void WriteToEventLog() // Listing 3-44
+        {
+            SetupLog();
+            
+            if (SetupLog() == CreationResult.CreatedLog)
+            {
+                Console.WriteLine("Log created");
+                Console.WriteLine("Restart the program");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("Processing started");
+
+            imageEventLog.WriteEntry("Image processing started");
+
+            // process images
+
+            imageEventLog.WriteEntry("Image processing ended");
+
+            Console.WriteLine("Processing complete.");
+        }
+
+        private static CreationResult SetupLog() // Listing 3-44
+        {
+            string categoryName = "Image Processing";
+
+            if(EventLog.SourceExists(categoryName))
+            {
+                imageEventLog = new EventLog();
+                imageEventLog.Source = categoryName;
+                return CreationResult.LoadedLog;
+            }
+
+            EventLog.CreateEventSource(source: categoryName, logName: categoryName + " log");
+
+            return CreationResult.CreatedLog;
         }
 
         private static CreationResult SetupPerformanceCounters() // Listing 3-43
