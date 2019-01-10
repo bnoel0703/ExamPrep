@@ -222,29 +222,72 @@ namespace ExamPrepConsoleApp
         delegate int IntOperation(int a, int b);
         delegate int GetValue();
         static GetValue getLocalInt;
+        static PerformanceCounter TotalImageCounter;
+        static PerformanceCounter ImagesPerSecondCounter;
+
+        enum CreationResult
+        {
+            CreatedCounters,
+            LoadedCounters
+        };
 
         // static CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         // static CancellationToken cancellationToken = new CancellationToken();
 
         static void Main(string[] args)
         {
+            
+
+            EndProgram();
+        }
+
+        private static CreationResult SetupPerformanceCounters() // Listing 3-43
+        {
+            string categoryName = "Image Processing";
+            if (PerformanceCounterCategory.Exists(categoryName))
+            {
+                // production code should use using
+                TotalImageCounter = new PerformanceCounter(categoryName: categoryName, counterName: "# of images processed", readOnly: false);
+                // production code should use using
+                ImagesPerSecondCounter = new PerformanceCounter(categoryName: categoryName, counterName: "# images processed per second", readOnly: false);
+                return CreationResult.LoadedCounters;
+            }
+
+            CounterCreationData[] counters = new CounterCreationData[] {
+                new CounterCreationData(counterName: "# of images processed",
+                                        counterHelp: "number of images resized",
+                                        counterType: PerformanceCounterType.NumberOfItems64),
+                new CounterCreationData(counterName: "# images processed per second",
+                                        counterHelp: "number of images processed per second",
+                                        counterType: PerformanceCounterType.RateOfCountsPerSecond32)
+            };
+
+            CounterCreationDataCollection counterCollection = new CounterCreationDataCollection(counters);
+
+            PerformanceCounterCategory.Create(categoryName: categoryName,
+                                              categoryHelp:"Image processing information",
+                                              categoryType:PerformanceCounterCategoryType.SingleInstance,
+                                              counterData:counterCollection);
+            return CreationResult.CreatedCounters;
+        }
+
+        private static void ReadPerformanceCounters() // Listing 3-42
+        {
             PerformanceCounter processor = new PerformanceCounter(
-                categoryName:"Processor Information",
+                categoryName: "Processor Information",
                 counterName: "% Processor Time",
                 instanceName: "_Total"
             );
 
             Console.WriteLine("Press any key to stop");
 
-            while(true)
+            while (true)
             {
                 System.Console.WriteLine($"Processor time {processor.NextValue()}");
                 Thread.Sleep(500);
                 if (Console.KeyAvailable)
                     break;
             }
-
-            EndProgram();
         }
 
         private static void SourceSwitch() // Listing 3-40
