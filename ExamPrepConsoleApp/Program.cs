@@ -244,6 +244,40 @@ namespace ExamPrepConsoleApp
             EndProgram();
         }
 
+        private static void BindToEventLog() // Listing 3-46
+        {
+            string categoryName = "Image Processing";
+
+            EventLog imageEventLog = new EventLog();
+            imageEventLog.Source = categoryName;
+            imageEventLog.EntryWritten += ImageEventLog_EntryWritten;
+            imageEventLog.EnableRaisingEvents = true;
+
+            Console.WriteLine("Listening for log events");
+        }
+
+        private static void ImageEventLog_EntryWritten(object sender, EntryWrittenEventArgs e) // Listing 3-46
+        {
+            Console.WriteLine(e.Entry.Message);
+        }
+
+        private static void ReadFromEventLog() // Listing 3-45
+        {
+            string categoryName = "Image Processing";
+
+            if (!EventLog.SourceExists(categoryName))
+                Console.WriteLine("Event log not present");
+            else
+            {
+                EventLog imageEventLog = new EventLog();
+                imageEventLog.Source = categoryName;
+                foreach (EventLogEntry entry in imageEventLog.Entries)
+                {
+                    Console.WriteLine($"Source: {entry.Source} Type: {entry.TimeWritten} Message: {entry.Message}");
+                }
+            }
+        }
+
         private static void WriteToEventLog() // Listing 3-44
         {
             SetupLog();
