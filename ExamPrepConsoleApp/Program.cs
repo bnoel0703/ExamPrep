@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Security.Cryptography.X509Certificates;
+using System.IO.Compression;
 
 namespace ExamPrepConsoleApp
 {
@@ -242,6 +243,55 @@ namespace ExamPrepConsoleApp
             
 
             EndProgram();
+        }
+
+        private static void StoreCompressedFile() // Listing 4-4
+        {
+            using (FileStream writeFile = new FileStream("CompText.zip", FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                using (GZipStream writeFileZip = new GZipStream(writeFile, CompressionMode.Compress))
+                {
+                    using (StreamWriter writeFileText = new StreamWriter(writeFileZip))
+                    {
+                        writeFileText.Write("Hello world");
+                    }
+                }
+            }
+
+            using (FileStream readFile = new FileStream("CompText.zip", FileMode.Open, FileAccess.Read))
+            {
+                using (GZipStream readFileZip = new GZipStream(readFile, CompressionMode.Decompress))
+                {
+                    using (StreamReader readFileText = new StreamReader(readFileZip))
+                    {
+                        string message = readFileText.ReadToEnd();
+                        Console.WriteLine($"Read text: {message}");
+                    }
+                }
+            }
+        }
+
+        private static void UseStreamWriterStreamReader() // Listing 4-3
+        {
+            using (StreamWriter writeStream = new StreamWriter("OutputText.txt"))
+            {
+                writeStream.Write("Hello world");
+            }
+            using (StreamReader readStream = new StreamReader("OutputText.txt"))
+            {
+                string readString = readStream.ReadToEnd();
+                Console.WriteLine($"Text read: {readString}");
+            }
+        }
+
+        private static void UseFileStream() // Listing 4-2
+        {
+            using (FileStream outputStream = new FileStream("OutputText.txt", FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                string outputMessageString = "Hello world";
+                byte[] outputMessageBytes = Encoding.UTF8.GetBytes(outputMessageString);
+                outputStream.Write(outputMessageBytes, 0, outputMessageBytes.Length);
+            }
         }
 
         private static void WriteToFile() // Listing 4-1
