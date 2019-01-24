@@ -245,6 +245,27 @@ namespace ExamPrepConsoleApp
             EndProgram();
         }
 
+        private static void UseFileClass() // Listing 4-5
+        {
+            File.WriteAllText(path: "TextFile.txt", contents: "This text goes in the file");
+
+            File.AppendAllText(path: "TextFile.txt", contents: " - This goes on the end");
+
+            if (File.Exists("TextFile.txt"))
+                Console.WriteLine("Text File exists");
+
+            string contents = File.ReadAllText(path: "TextFile.txt");
+            Console.WriteLine("File contents: {0}", contents);
+
+            File.Copy(sourceFileName: "TextFile.txt", destFileName: "Copy-TextFile.txt");
+
+            using (TextReader reader = File.OpenText(path: "Copy-TextFile.txt"))
+            {
+                string text = reader.ReadToEnd();
+                Console.WriteLine($"Copied text: {text}");
+            }
+        }
+
         private static void StoreCompressedFile() // Listing 4-4
         {
             using (FileStream writeFile = new FileStream("CompText.zip", FileMode.OpenOrCreate, FileAccess.Write))
