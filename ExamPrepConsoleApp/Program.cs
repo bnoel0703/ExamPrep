@@ -240,7 +240,7 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            
+
 
             EndProgram();
         }
@@ -254,8 +254,21 @@ namespace ExamPrepConsoleApp
             if (File.Exists("TextFile.txt"))
                 Console.WriteLine("Text File exists");
 
-            string contents = File.ReadAllText(path: "TextFile.txt");
-            Console.WriteLine("File contents: {0}", contents);
+            try // Listing 4-6
+            {
+                string contents = File.ReadAllText(path: "TextFile.txt");
+                Console.WriteLine("File contents: {0}", contents);
+            }
+            catch(FileNotFoundException notFoundEx)
+            {
+                // File not found
+                Console.WriteLine(notFoundEx.Message);
+            }
+            catch(Exception ex)
+            {
+                // Any other exception
+                Console.WriteLine(ex.Message);
+            }
 
             File.Copy(sourceFileName: "TextFile.txt", destFileName: "Copy-TextFile.txt");
 
@@ -369,7 +382,7 @@ namespace ExamPrepConsoleApp
         private static void WriteToEventLog() // Listing 3-44
         {
             SetupLog();
-            
+
             if (SetupLog() == CreationResult.CreatedLog)
             {
                 Console.WriteLine("Log created");
@@ -393,7 +406,7 @@ namespace ExamPrepConsoleApp
         {
             string categoryName = "Image Processing";
 
-            if(EventLog.SourceExists(categoryName))
+            if (EventLog.SourceExists(categoryName))
             {
                 imageEventLog = new EventLog();
                 imageEventLog.Source = categoryName;
@@ -429,9 +442,9 @@ namespace ExamPrepConsoleApp
             CounterCreationDataCollection counterCollection = new CounterCreationDataCollection(counters);
 
             PerformanceCounterCategory.Create(categoryName: categoryName,
-                                              categoryHelp:"Image processing information",
-                                              categoryType:PerformanceCounterCategoryType.SingleInstance,
-                                              counterData:counterCollection);
+                                              categoryHelp: "Image processing information",
+                                              categoryType: PerformanceCounterCategoryType.SingleInstance,
+                                              counterData: counterCollection);
             return CreationResult.CreatedCounters;
         }
 
