@@ -257,14 +257,14 @@ namespace ExamPrepConsoleApp
             try // Listing 4-6
             {
                 string contents = File.ReadAllText(path: "TextFile.txt");
-                Console.WriteLine("File contents: {0}", contents);
+                Console.WriteLine($"File contents: {contents}");
             }
-            catch(FileNotFoundException notFoundEx)
+            catch (FileNotFoundException notFoundEx)
             {
                 // File not found
                 Console.WriteLine(notFoundEx.Message);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // Any other exception
                 Console.WriteLine(ex.Message);
