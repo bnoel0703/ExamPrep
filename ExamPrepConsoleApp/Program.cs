@@ -241,9 +241,27 @@ namespace ExamPrepConsoleApp
         static void Main(string[] args)
         {
             
-            
 
             EndProgram();
+        }
+
+        private static void UsingFileInfo()
+        {
+            string filePath = "TextFile.txt";
+
+            File.WriteAllText(path: filePath, contents: "This text goes in the file");
+            FileInfo info = new FileInfo(filePath);
+            Console.WriteLine($"Name: {info.Name}");
+            Console.WriteLine($"Full Path: {info.FullName}");
+            Console.WriteLine($"Last Access: {info.LastAccessTime}");
+            Console.WriteLine($"Length: {info.Length}");
+            Console.WriteLine($"Attributes: {info.Attributes}");
+            Console.WriteLine("Make the file read only");
+            info.Attributes |= FileAttributes.ReadOnly;
+            Console.WriteLine($"Attributes: {info.Attributes}");
+            Console.WriteLine($"Remove the read only attribute");
+            info.Attributes &= ~FileAttributes.ReadOnly;
+            Console.WriteLine($"Attributes: {info.Attributes}");
         }
 
         private static void DriveInformation() // Listing 4-7
