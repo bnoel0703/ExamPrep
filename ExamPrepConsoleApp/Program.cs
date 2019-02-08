@@ -241,8 +241,26 @@ namespace ExamPrepConsoleApp
         static void Main(string[] args)
         {
 
-
             EndProgram();
+        }
+
+        private static void FileNotFoundExceptionHandling() // Listing 4-6
+        {
+            try
+            {
+                string contents = File.ReadAllText(path: "TestFile.txt");
+                Console.WriteLine(contents);
+            }
+            catch (FileNotFoundException notFoundEx)
+            {
+                // File not found
+                Console.WriteLine(notFoundEx.Message);
+            }
+            catch (Exception ex)
+            {
+                // Any other exception
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private static void UseFileClass() // Listing 4-5
