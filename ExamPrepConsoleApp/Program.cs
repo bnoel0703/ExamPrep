@@ -240,8 +240,29 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
+            
+            
 
             EndProgram();
+        }
+
+        private static void DriveInformation() // Listing 4-7
+        {
+            DriveInfo[] drives = DriveInfo.GetDrives();
+            foreach (DriveInfo drive in drives)
+            {
+                Console.Write($"Name: {drive.Name} ");
+                if (drive.IsReady)
+                {
+                    Console.Write($"  Type:{drive.DriveType}");
+                    Console.Write($"  Format:{drive.DriveFormat}");
+                    Console.Write($"  Free space:{drive.TotalFreeSpace}");
+                }
+                else
+                {
+                    Console.Write(" Drive is not ready");
+                }
+            }
         }
 
         private static void FileNotFoundExceptionHandling() // Listing 4-6
