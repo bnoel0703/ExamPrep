@@ -240,9 +240,31 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            
+            UseFindFiles();
 
             EndProgram();
+        }
+
+        private static void UseFindFiles() // Listing 4-12
+        {
+            DirectoryInfo startDir = new DirectoryInfo(@"..\..\..\");
+            string searchString = "*.cs";
+
+            FindFiles(startDir, searchString);
+        }
+
+        static void FindFiles(DirectoryInfo dir, string searchPattern) // Listing 4-12
+        {
+            foreach (DirectoryInfo directory in dir.GetDirectories())
+            {
+                FindFiles(directory, searchPattern);
+            }
+
+            FileInfo[] matchingFiles = dir.GetFiles(searchPattern);
+            foreach (FileInfo fileInfo in matchingFiles)
+            {
+                Console.WriteLine(fileInfo.FullName);
+            }
         }
 
         private static void UseFileClass() // Listing 4-11
