@@ -240,10 +240,27 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-
-
+            
 
             EndProgram();
+        }
+
+        private static void UseFileClass() // Listing 4-11
+        {
+            string fullName = @"c:\users\bnoel\Documents\test.txt";
+
+            string dirName = Path.GetDirectoryName(fullName);
+            string fileName = Path.GetFileName(fullName);
+            string fileExtension = Path.GetExtension(fullName);
+            string lisName = Path.ChangeExtension(fullName, ".lis");
+            string newTest = Path.Combine(dirName, "newtest.txt");
+
+            Console.WriteLine($"Full name: {fullName}");
+            Console.WriteLine($"File directory: {dirName}");
+            Console.WriteLine($"File name: {fileName}");
+            Console.WriteLine($"File extension: {fileExtension}");
+            Console.WriteLine($"File with lis extension: {lisName}");
+            Console.WriteLine($"New test: {newTest}");
         }
 
         private static void UseDirectoryInfo() // Listing 4-10
