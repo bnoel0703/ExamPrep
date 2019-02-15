@@ -245,7 +245,7 @@ namespace ExamPrepConsoleApp
             EndProgram();
         }
 
-        private static void UsingFileInfo()
+        private static void UsingFileInfo() // Listing 4-8
         {
             string filePath = "TextFile.txt";
 
