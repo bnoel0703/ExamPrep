@@ -240,9 +240,34 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            
+
+
 
             EndProgram();
+        }
+
+        private static void UseDirectoryInfo() // Listing 4-10
+        {
+            DirectoryInfo localDir = new DirectoryInfo("TestDir");
+
+            localDir.Create();
+
+            if (localDir.Exists)
+                Console.WriteLine("Directory created successfully");
+
+            localDir.Delete();
+
+            Console.WriteLine("Directory deleted successfully");
+        }
+
+        private static void UseDirectoryClass() // Listing 4-9
+        {
+            Directory.CreateDirectory("TestDir");
+            if (Directory.Exists("TestDir"))
+                Console.WriteLine("Directory created successfully");
+
+            Directory.Delete("TestDir");
+            Console.WriteLine("Directory deleted successfully");
         }
 
         private static void UsingFileInfo() // Listing 4-8
