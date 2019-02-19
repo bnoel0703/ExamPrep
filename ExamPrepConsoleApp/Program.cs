@@ -246,6 +246,12 @@ namespace ExamPrepConsoleApp
             EndProgram();
         }
 
+        async Task<string> ReadWebpage(string uri) // Listing 4-15
+        {
+            WebClient client = new WebClient();
+            return await client.DownloadStringTaskAsync(uri);
+        }
+
         private static void UseWebClient() // Listing 4-14
         {
             WebClient webClient = new WebClient();
