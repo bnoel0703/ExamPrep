@@ -21,6 +21,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Security.Cryptography.X509Certificates;
 using System.IO.Compression;
+using System.Net;
 
 namespace ExamPrepConsoleApp
 {
@@ -240,9 +241,21 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            UseFindFiles();
+            
 
             EndProgram();
+        }
+
+        private static void UsingHttpWebRequest() //Listing 4-13
+        {
+            WebRequest webRequest = WebRequest.Create("https://www.microsoft.com");
+            WebResponse webResponse = webRequest.GetResponse();
+
+            using (StreamReader responseReader = new StreamReader(webResponse.GetResponseStream()))
+            {
+                string siteText = responseReader.ReadToEnd();
+                Console.WriteLine(siteText);
+            }
         }
 
         private static void UseFindFiles() // Listing 4-12
@@ -267,7 +280,7 @@ namespace ExamPrepConsoleApp
             }
         }
 
-        private static void UseFileClass() // Listing 4-11
+        private static void UseFileClass2() // Listing 4-11
         {
             string fullName = @"c:\users\bnoel\Documents\test.txt";
 
