@@ -22,6 +22,7 @@ using System.Text;
 using System.Security.Cryptography.X509Certificates;
 using System.IO.Compression;
 using System.Net;
+using System.Net.Http;
 
 namespace ExamPrepConsoleApp
 {
@@ -244,6 +245,12 @@ namespace ExamPrepConsoleApp
             
 
             EndProgram();
+        }
+
+        async Task<string> ReadHttpWebpage(string uri) // Listing 4-16
+        {
+            HttpClient client = new HttpClient();
+            return await client.GetStringAsync(uri);
         }
 
         async Task<string> ReadWebpage(string uri) // Listing 4-15
