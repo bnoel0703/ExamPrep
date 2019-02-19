@@ -246,7 +246,14 @@ namespace ExamPrepConsoleApp
             EndProgram();
         }
 
-        private static void UsingHttpWebRequest() //Listing 4-13
+        private static void UseWebClient() // Listing 4-14
+        {
+            WebClient webClient = new WebClient();
+            string siteText = webClient.DownloadString("http://www.microsoft.com");
+            Console.WriteLine(siteText);
+        }
+
+        private static void UsingHttpWebRequest() // Listing 4-13
         {
             WebRequest webRequest = WebRequest.Create("https://www.microsoft.com");
             WebResponse webResponse = webRequest.GetResponse();
