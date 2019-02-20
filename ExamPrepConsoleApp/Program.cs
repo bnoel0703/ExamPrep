@@ -23,6 +23,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
+using System.Data.SqlClient;
 
 namespace ExamPrepConsoleApp
 {
@@ -245,6 +246,29 @@ namespace ExamPrepConsoleApp
             
 
             EndProgram();
+        }
+
+        private static void ReadWithSQL()
+        {
+            string connectionString = "Server=(localdb)\\mssqllocaldb;" +
+                                                  "Database=MusicTracksContext-e0f0cd0d-38fe-44a4-add2-359310ff8b5d;" +
+                                                  "Trusted_Connection=True;MultipleActiveResultSets=true"; // NEVER DO THIS
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand("SELECT * FROM MusicTrack", connection);
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    string artist = reader["Artist"].ToString();
+                    string title = reader["Title"].ToString();
+
+                    Console.WriteLine($"Artist: {artist} Title {title}");
+                }
+            }
         }
 
         async Task<string> ReadHttpWebpage(string uri) // Listing 4-16
