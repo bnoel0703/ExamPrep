@@ -215,6 +215,17 @@ namespace ExamPrepConsoleApp
         public MusicTrack() { }
     }
 
+    class ImageOfDay
+    {
+        public string date { get; set; }
+        public string explanation { get; set; }
+        public string hdurl { get; set; }
+        public string media_type { get; set; }
+        public string service_version { get; set; }
+        public string title { get; set; }
+        public string url { get; set; }
+    }
+
     class Program
     {
         //make an array that holds the values 0 to 50000000
@@ -248,7 +259,16 @@ namespace ExamPrepConsoleApp
             EndProgram();
         }
 
-        private static void ReadWithSQL()
+        async Task<ImageOfDay> GetImageOfDay(string imageURL) // Listing 4-25
+        {
+            string NASAJson = await ReadWebpage(imageURL);
+
+            ImageOfDay result = JsonConvert.DeserializeObject<ImageOfDay>(NASAJson);
+
+            return result;
+        }
+
+        private static void ReadWithSQL() // Listing 4-19
         {
             string connectionString = "Server=(localdb)\\mssqllocaldb;" +
                                                   "Database=MusicTracksContext-e0f0cd0d-38fe-44a4-add2-359310ff8b5d;" +
