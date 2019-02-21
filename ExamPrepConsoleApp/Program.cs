@@ -255,7 +255,7 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-            
+
 
             EndProgram();
         }
@@ -279,6 +279,21 @@ namespace ExamPrepConsoleApp
                     string description = string.Format($"Type: {reader.NodeType.ToString()} Name: {reader.Name} Value: {reader.Value}");
                     Console.WriteLine(description);
                 }
+            }
+
+            XmlDocument doc = new XmlDocument(); // Listing 4-27; Another way to do it
+            doc.LoadXml(XMLDocument);
+
+            System.Xml.XmlElement rootElement = doc.DocumentElement;
+            // make sure it is the right element
+            if (rootElement.Name != "MusicTrack")
+                Console.WriteLine("Not a music track");
+            else
+            {
+                string artist = rootElement["Artist"].FirstChild.Value;
+                Console.WriteLine("", artist);
+                string title = rootElement["Title"].FirstChild.Value;
+                Console.WriteLine($"Artist: {artist} Title: {title}");
             }
         }
 
