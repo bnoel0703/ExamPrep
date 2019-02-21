@@ -24,6 +24,7 @@ using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
 using System.Data.SqlClient;
+using System.Xml;
 
 namespace ExamPrepConsoleApp
 {
@@ -259,6 +260,28 @@ namespace ExamPrepConsoleApp
             EndProgram();
         }
 
+        private static void ReadXMLElements() // Listing 4-26
+        {
+            string XMLDocument = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" +
+                                             "<MusicTrack xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"> " +
+                                             "xmlns:xsd=\"http://www.w2.org/2001/XMLSchema\">  " +
+                                             "<Artist>Rob Miles</Artist>  " +
+                                             "<Title>My Way</Title>  " +
+                                             "<Length>150</Length>" +
+                                             "</MusicTrack>";
+
+            using (StringReader stringReader = new StringReader(XMLDocument))
+            {
+                XmlTextReader reader = new XmlTextReader(stringReader);
+
+                while (reader.Read())
+                {
+                    string description = string.Format($"Type: {reader.NodeType.ToString()} Name: {reader.Name} Value: {reader.Value}");
+                    Console.WriteLine(description);
+                }
+            }
+        }
+
         async Task<ImageOfDay> GetImageOfDay(string imageURL) // Listing 4-25
         {
             string NASAJson = await ReadWebpage(imageURL);
@@ -268,7 +291,7 @@ namespace ExamPrepConsoleApp
             return result;
         }
 
-        private static void ReadWithSQL() // Listing 4-19
+        private static void ReadWithSQL() // Listing 4-19 
         {
             string connectionString = "Server=(localdb)\\mssqllocaldb;" +
                                                   "Database=MusicTracksContext-e0f0cd0d-38fe-44a4-add2-359310ff8b5d;" +
