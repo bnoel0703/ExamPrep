@@ -255,7 +255,7 @@ namespace ExamPrepConsoleApp
 
         static void Main(string[] args)
         {
-
+            
 
             EndProgram();
         }
@@ -1247,6 +1247,27 @@ namespace ExamPrepConsoleApp
         {
             Console.WriteLine($"Working on: {data}");
             Thread.Sleep(1000);
+        }
+
+        static void ParallelInvokeInAction() // Listing 1-1
+        {
+            Parallel.Invoke(() => Task1(), () => Task2());
+
+            EndProgram();
+        }
+
+        static void Task2() // Listing 1-1
+        {
+            Console.WriteLine("Task 2 starting");
+            Thread.Sleep(1000);
+            Console.WriteLine("Task 2 ending");
+        }
+
+        static void Task1() // Listing 1-1
+        {
+            Console.WriteLine("Task 1 starting");
+            Thread.Sleep(2000);
+            Console.WriteLine("Task 1 ending");
         }
     }
 }
