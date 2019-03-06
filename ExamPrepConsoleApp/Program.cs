@@ -1249,6 +1249,23 @@ namespace ExamPrepConsoleApp
             Thread.Sleep(1000);
         }
 
+        static void ParallelForEachInAction() // Listing 1-2
+        {
+            var items = Enumerable.Range(0, 500);
+
+            Parallel.ForEach(items, item =>
+            {
+                WorkOnItem(item);
+            });
+        }
+
+        static void WorkOnItem(object item) // Listing 1-2
+        {
+            Console.WriteLine($"Started working on: {item}");
+            Thread.Sleep(100);
+            Console.WriteLine($"Finished working on: {item}");
+        }
+
         static void ParallelInvokeInAction() // Listing 1-1
         {
             Parallel.Invoke(() => Task1(), () => Task2());
